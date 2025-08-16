@@ -10,7 +10,7 @@ interface ProductListProps {
 const ProductCard = ({ product }: ProductListProps) => {
   const price = product.default_price as Stripe.Price;
   return (
-    <Link href={'/products/1'}>
+    <Link href={`/products/${product.id}`}>
       <Card>
         <div>
           <Image
