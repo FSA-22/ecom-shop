@@ -4,7 +4,7 @@ import { stripe } from '@/lib/stripe';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const Home = async () => {
+const ProductPage = async () => {
   const products = await stripe.products.list({
     expand: ['data.default_price'],
     limit: 5,
@@ -52,4 +52,4 @@ const Home = async () => {
   );
 };
 
-export default Home;
+export default ProductPage;
