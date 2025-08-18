@@ -41,7 +41,7 @@ const Carousel = ({ products }: CarouselProps) => {
     return () => {
       if (timeoutRef.current) clearInterval(timeoutRef.current);
     };
-  }, [products.length]);
+  }, [products.length, nextSlide]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;

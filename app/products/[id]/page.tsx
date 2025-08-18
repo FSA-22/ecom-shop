@@ -5,11 +5,13 @@ import stripe from '@/lib/stripe';
 import AddToCartButton from '@/components/cart/addToCartButton';
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ProductDetailsPage({ params }: Props) {
-  const product = await stripe.products.retrieve(params.id, {
+  const { id } = await params; // 👈 await here
+
+  const product = await stripe.products.retrieve(id, {
     expand: ['default_price'],
   });
 

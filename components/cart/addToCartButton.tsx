@@ -4,7 +4,7 @@ import { useCartStore } from '@/lib/store';
 import React from 'react';
 import { Button } from '../ui/button';
 
-interface AddToCartButtonProps {
+export interface AddToCartButtonProps {
   price: {
     unit_amount: number | null;
   };
@@ -16,7 +16,7 @@ interface AddToCartButtonProps {
 }
 
 const AddToCartButton = ({ price, product }: AddToCartButtonProps) => {
-  const { items, addItem, removeItem, clearCart } = useCartStore();
+  const { items, addItem, removeItem } = useCartStore();
 
   const cartItem = items.find((item) => item.id === product.id);
 
@@ -43,10 +43,10 @@ const AddToCartButton = ({ price, product }: AddToCartButtonProps) => {
       <Button onClick={handleRemoveProduct} variant={'outline'}>
         -
       </Button>
-      <span className="font-semibold"> {quantity > 0 ? quantity : 0} </span>
+      <span className="font-semibold"> {quantity} </span>
       <Button
         variant={'ghost'}
-        className="bg-rose-500 text-white hover:bg-white"
+        className="bg-rose-500 text-white hover:border-2 hover:border-rose-500 hover:bg-white hover:text-rose-500"
         onClick={handleAddProduct}
       >
         +

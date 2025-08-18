@@ -35,7 +35,7 @@ export const useCartStore = create<CartStore>()(
           return { items: [...state.items, item] };
         }),
 
-      removeItem: (id) =>
+      removeItem: () =>
         set((state) => {
           return {
             items: state.items.map((item) =>
