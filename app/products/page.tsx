@@ -1,5 +1,5 @@
 import ProductsList from '@/components/products/ProductsList';
-import { stripe } from '@/lib/stripe';
+import stripe from '@/lib/stripe';
 import React from 'react';
 
 const Products = async () => {

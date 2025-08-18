@@ -1,23 +1,53 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import Stripe from 'stripe';
 
-interface StripeStore {
-  products: Stripe.Product[];
-  setProducts: (products: Stripe.Product[]) => void;
-  getProductById: (id: string) => Stripe.Product | undefined;
+export interface CartItem {
+  id: string;
+  name: string;
+  imgUrl: string;
+  price: number;
+  quantity: number;
 }
 
-export const useStripeProductsStore = create<StripeStore>()(
+interface CartStore {
+  items: CartItem[];
+  addItem: (item: CartItem) => void;
+  removeItem: (id: string) => void;
+  clearCart: () => void;
+}
+
+export const useCartStore = create<CartStore>()(
   persist(
-    (set, get) => ({
-      products: [],
-      setProducts: (products) => set({ products }),
-      getProductById: (id) => get().products.find((p) => p.id === id),
+    (set) => ({
+      items: [],
+      addItem: (item) =>
+        set((state) => {
+          const existingItem = state.items.find((i) => i.id === item.id);
+          if (existingItem) {
+            return {
+              items: state.items.map((i) =>
+                i.id === item.id
+                  ? { ...i, quantity: i.quantity + item.quantity }
+                  : i,
+              ),
+            };
+          }
+          return { items: [...state.items, item] };
+        }),
+
+      removeItem: (id) =>
+        set((state) => {
+          return {
+            items: state.items.map((item) =>
+              item.id ? { ...item, quantity: item.quantity - 1 } : item,
+            ),
+          };
+        }),
+      clearCart: () =>
+        set(() => {
+          return { items: [] };
+        }),
     }),
-    {
-      name: 'stripe-products-storage',
-      partialize: (state) => ({ products: state.products }), // only persist `products`
-    },
+    { name: 'cart-storage' },
   ),
 );

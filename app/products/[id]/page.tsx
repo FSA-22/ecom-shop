@@ -1,15 +1,12 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Stripe from 'stripe';
-import { Button } from '@/components/ui/button';
+import stripe from '@/lib/stripe';
+import AddToCartButton from '@/components/cart/addToCartButton';
 
 interface Props {
   params: { id: string };
 }
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-06-30.basil',
-});
 
 export default async function ProductDetailsPage({ params }: Props) {
   const product = await stripe.products.retrieve(params.id, {
@@ -21,7 +18,7 @@ export default async function ProductDetailsPage({ params }: Props) {
   const price = product.default_price as Stripe.Price;
 
   return (
-    <div className="p-6 max-w-6xl flex items-center justify-between">
+    <section className="p-6 max-w-6xl flex max-md:flex-col max-md:h-screen items-center h-[80vh] justify-between">
       {product.images?.[0] && (
         <Image
           src={product.images[0]}
@@ -31,27 +28,29 @@ export default async function ProductDetailsPage({ params }: Props) {
           className="rounded-lg mb-4 object-contain"
         />
       )}
-      <div>
-        <h2 className="text-2xl font-semibold">{product.name}</h2>
+      <div className="mx-auto">
+        <h2 className="text-2xl font-semibold mb-4">{product.name}</h2>
 
         {product.description && (
-          <p className="text-gray-700">{product.description}</p>
+          <p className="text-gray-700 mb-4">{product.description}</p>
         )}
 
         {price?.unit_amount && (
-          <p className="text-lg text-gray-700 mb-2">
+          <p className="text-lg text-gray-700 mb-4">
             ₦{price.unit_amount.toLocaleString()}
           </p>
         )}
-
-        <Button variant="outline" className="cursor-pointer">
-          -
-        </Button>
-        <span className="font-medium text-rose-500 mx-2">{0}</span>
-        <Button variant="outline" className="cursor-pointer">
-          +
-        </Button>
+        <AddToCartButton
+          price={{
+            unit_amount: price?.unit_amount ?? 0,
+          }}
+          product={{
+            id: product.id,
+            name: product.name,
+            images: product.images,
+          }}
+        />
       </div>
-    </div>
+    </section>
   );
 }
